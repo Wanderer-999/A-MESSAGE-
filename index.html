@@ -1,123 +1,275 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>For You ❤️</title>
-<!-- Load Poppins font from Google Fonts -->
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap" rel="stylesheet">
+<!-- Poppins font -->
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap" rel="stylesheet" />
 <style>
+  /* Background gradient and sparkle */
   body {
     margin: 0;
     padding: 0;
-    background: linear-gradient(to bottom, #ff9ecf, #ff4da6);
-    overflow: hidden;
     font-family: 'Poppins', sans-serif;
-    text-align: center;
+    background: linear-gradient(135deg, #ff9ecf 0%, #ff4da6 100%);
+    overflow: hidden;
     color: white;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-height: 100vh;
+    justify-content: center;
+    text-align: center;
   }
 
+  /* Sparkle effect container */
+  #sparkles {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    pointer-events: none;
+    overflow: visible;
+    z-index: 1;
+  }
+
+  /* Sparkle dots */
+  .sparkle {
+    position: absolute;
+    background: white;
+    border-radius: 50%;
+    opacity: 0.8;
+    animation: sparkle-flicker 2.5s infinite alternate;
+  }
+
+  @keyframes sparkle-flicker {
+    from {opacity: 0.1;}
+    to {opacity: 0.8;}
+  }
+
+  /* Heading style */
   h1 {
-    margin-top: 15%;
-    font-size: 48px;
+    font-size: 56px;
     font-weight: 700;
-    text-shadow: 3px 3px 8px #b71c1c;
+    margin: 0 20px 20px;
+    text-shadow:
+      0 0 8px #ff77a9,
+      0 0 15px #ff4da6,
+      0 0 20px #ff1a75;
+    animation: glowPulse 3s ease-in-out infinite alternate;
+    z-index: 10;
   }
 
+  /* Paragraph style */
   p {
-    font-size: 28px;
-    width: 80%;
-    margin: auto;
-    margin-top: 20px;
-    text-shadow: 2px 2px 6px #400000;
-    line-height: 1.5;
+    font-size: 30px;
+    margin: 0 20px;
+    line-height: 1.6;
+    max-width: 600px;
+    text-shadow: 0 0 6px #80002c;
+    animation: fadeInUp 2s ease forwards;
+    opacity: 0;
+    animation-delay: 0.5s;
   }
 
+  /* Glow pulse for heading */
+  @keyframes glowPulse {
+    0% {
+      text-shadow:
+        0 0 8px #ff77a9,
+        0 0 15px #ff4da6,
+        0 0 20px #ff1a75;
+    }
+    100% {
+      text-shadow:
+        0 0 20px #ff77a9,
+        0 0 35px #ff4da6,
+        0 0 45px #ff1a75;
+    }
+  }
+
+  /* Fade in and up animation for paragraph */
+  @keyframes fadeInUp {
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+  }
+
+  /* Floating hearts */
   .heart {
     position: fixed;
-    top: -10px;
-    color: red;
-    font-size: 24px;
-    animation: fall linear infinite;
+    top: -40px;
+    color: #ff1a75;
+    font-size: 32px;
+    opacity: 0.8;
+    filter: drop-shadow(0 0 4px #ff4da6);
+    animation-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+    animation-name: fallHeart, swayHeart;
+    animation-iteration-count: infinite;
   }
 
-  @keyframes fall {
-    to {
-      transform: translateY(100vh);
+  @keyframes fallHeart {
+    0% {
+      transform: translateY(0) translateX(0) scale(1);
+      opacity: 0.8;
+    }
+    100% {
+      transform: translateY(110vh) translateX(20px) scale(1.2);
+      opacity: 0;
+    }
+  }
+
+  @keyframes swayHeart {
+    0%, 100% {
+      transform: translateX(0);
+    }
+    50% {
+      transform: translateX(15px);
     }
   }
 
   audio {
     margin-top: 30px;
     outline: none;
+    border-radius: 12px;
+    box-shadow: 0 0 12px #ff4da6;
+    width: 80%;
+    max-width: 400px;
+  }
+
+  @media (max-width: 600px) {
+    h1 {
+      font-size: 36px;
+    }
+    p {
+      font-size: 20px;
+      max-width: 90%;
+      margin: 0 10px;
+    }
+    audio {
+      width: 90%;
+    }
   }
 </style>
 </head>
 <body>
 
-<h1 id="personalMessage"></h1>
+<h1 id="personalMessage">Loading...</h1>
 
-<p>
-"If 99.99% of people hate you, there are still 8 million people to love you.
+<p id="quote" style="opacity: 0;">
+"If 99.99% of people hate you, there are still 8 million people to love you.<br />
 Even if they aren’t there for you, I am there for you — today, tomorrow, forever and ever."
 </p>
 
-<audio id="music" controls>
-  <source id="musicSource" src="" type="audio/mpeg">
-  Your browser does not support the audio element.
-</audio>
+<audio id="music" controls></audio>
+
+<div id="sparkles"></div>
 
 <script>
-// Ask for their name
-let username = prompt("Enter your name ❤️");
-
-if (username === null || username.trim() === "") {
-  username = "Beautiful";
-}
-
-document.getElementById("personalMessage").innerHTML =
-  "I am there for you, " + username + " ❤️";
-
-// Floating hearts
-function createHeart() {
-  const heart = document.createElement("div");
-  heart.classList.add("heart");
-  heart.innerHTML = "❤️";
-  heart.style.left = Math.random() * 100 + "vw";
-  heart.style.animationDuration = Math.random() * 3 + 2 + "s";
-  document.body.appendChild(heart);
-
-  setTimeout(() => {
-    heart.remove();
-  }, 5000);
-}
-
-setInterval(createHeart, 300);
-
-// Music sequence: 15 sec A Thousand Years → Golden Hour
-const music = document.getElementById("music");
-const musicSource = document.getElementById("musicSource");
-
-const songs = [
-  "https://cdn.pixabay.com/download/audio/2022/03/15/audio_1c4374d7d1.mp3?filename=a-thousand-years-short-11340.mp3", // 15s A Thousand Years
-  "https://cdn.pixabay.com/download/audio/2022/03/15/audio_5b1b5aa12f.mp3?filename=golden-hour-ambient-11234.mp3"  // Golden Hour
-];
-
-let currentSongIndex = 0;
-
-function playNextSong() {
-  musicSource.src = songs[currentSongIndex];
-  music.load();
-  music.play().catch(() => {
-    music.controls = true;
-  });
-  currentSongIndex++;
-  if (currentSongIndex >= songs.length) {
-    currentSongIndex = 0;
+  // Prompt for the name and show personalized message
+  let username = prompt("Enter your name ❤️");
+  if (username === null || username.trim() === "") {
+    username = "Beautiful";
   }
-}
+  const personalMessage = document.getElementById('personalMessage');
+  const quote = document.getElementById('quote');
 
-music.addEventListener("ended", playNextSong);
+  personalMessage.textContent = `I am there for you, ${username} ❤️`;
 
-playNextSong();
+  // Animate quote fade in
+  quote.style.opacity = '1';
+
+  // Floating hearts setup
+  function createHeart() {
+    const heart = document.createElement('div');
+    heart.className = 'heart';
+    heart.textContent = '❤️';
+    heart.style.left = Math.random() * 100 + 'vw';
+    heart.style.animationDuration = (Math.random() * 3 + 3) + 's'; // 3-6 seconds
+    heart.style.animationDelay = '0s';
+    document.body.appendChild(heart);
+
+    setTimeout(() => heart.remove(), 6000);
+  }
+
+  setInterval(createHeart, 400);
+
+  // Sparkle effect
+  const sparklesContainer = document.getElementById('sparkles');
+  const sparkleCount = 50;
+
+  for(let i=0; i < sparkleCount; i++) {
+    const sparkle = document.createElement('div');
+    sparkle.className = 'sparkle';
+    const size = Math.random() * 3 + 1.5; // 1.5 to 4.5 px
+    sparkle.style.width = size + 'px';
+    sparkle.style.height = size + 'px';
+    sparkle.style.top = Math.random() * 100 + 'vh';
+    sparkle.style.left = Math.random() * 100 + 'vw';
+    sparkle.style.animationDuration = (Math.random() * 2 + 1) + 's';
+    sparkle.style.animationDelay = (Math.random() * 5) + 's';
+    sparklesContainer.appendChild(sparkle);
+  }
+
+  // Music handling with fade between songs
+  const music = document.getElementById('music');
+  const songs = [
+    "https://cdn.pixabay.com/download/audio/2022/03/15/audio_1c4374d7d1.mp3?filename=a-thousand-years-short-11340.mp3",
+    "https://cdn.pixabay.com/download/audio/2022/03/15/audio_5b1b5aa12f.mp3?filename=golden-hour-ambient-11234.mp3"
+  ];
+
+  let currentSong = 0;
+  let fadeDuration = 3000; // milliseconds
+  let fadeInterval;
+  let isFading = false;
+
+  function setAudioSource(src) {
+    music.src = src;
+    music.load();
+  }
+
+  function fadeOutAudio(callback) {
+    if (isFading) return;
+    isFading = true;
+    let volume = music.volume;
+    fadeInterval = setInterval(() => {
+      if (volume > 0.05) {
+        volume -= 0.05;
+        music.volume = volume;
+      } else {
+        clearInterval(fadeInterval);
+        music.pause();
+        music.volume = 1;
+        isFading = false;
+        callback();
+      }
+    }, fadeDuration / 20);
+  }
+
+  function playSong(index) {
+    setAudioSource(songs[index]);
+    music.volume = 1;
+    music.play().catch(() => {
+      music.controls = true;
+    });
+  }
+
+  music.addEventListener('ended', () => {
+    fadeOutAudio(() => {
+      currentSong = (currentSong + 1) % songs.length;
+      playSong(currentSong);
+    });
+  });
+
+  // Start first song
+  playSong(currentSong);
 </script>
 
 </body>
