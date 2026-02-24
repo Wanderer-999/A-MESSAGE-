@@ -2,44 +2,53 @@
 <html>
 <head>
 <title>For You ❤️</title>
+<!-- Load Poppins font from Google Fonts -->
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap" rel="stylesheet">
 <style>
-body {
-  margin: 0;
-  padding: 0;
-  background: linear-gradient(to bottom, #ff9ecf, #ff4da6);
-  overflow: hidden;
-  font-family: Arial, sans-serif;
-  text-align: center;
-  color: white;
-}
-
-h1 {
-  margin-top: 15%;
-  font-size: 32px;
-  text-shadow: 2px 2px 8px red;
-}
-
-p {
-  font-size: 22px;
-  width: 80%;
-  margin: auto;
-  margin-top: 20px;
-  text-shadow: 1px 1px 5px black;
-}
-
-.heart {
-  position: fixed;
-  top: -10px;
-  color: red;
-  font-size: 20px;
-  animation: fall linear infinite;
-}
-
-@keyframes fall {
-  to {
-    transform: translateY(100vh);
+  body {
+    margin: 0;
+    padding: 0;
+    background: linear-gradient(to bottom, #ff9ecf, #ff4da6);
+    overflow: hidden;
+    font-family: 'Poppins', sans-serif;
+    text-align: center;
+    color: white;
   }
-}
+
+  h1 {
+    margin-top: 15%;
+    font-size: 48px;
+    font-weight: 700;
+    text-shadow: 3px 3px 8px #b71c1c;
+  }
+
+  p {
+    font-size: 28px;
+    width: 80%;
+    margin: auto;
+    margin-top: 20px;
+    text-shadow: 2px 2px 6px #400000;
+    line-height: 1.5;
+  }
+
+  .heart {
+    position: fixed;
+    top: -10px;
+    color: red;
+    font-size: 24px;
+    animation: fall linear infinite;
+  }
+
+  @keyframes fall {
+    to {
+      transform: translateY(100vh);
+    }
+  }
+
+  audio {
+    margin-top: 30px;
+    outline: none;
+  }
 </style>
 </head>
 <body>
@@ -51,8 +60,9 @@ p {
 Even if they aren’t there for you, I am there for you — today, tomorrow, forever and ever."
 </p>
 
-<audio id="music" autoplay>
-  <source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3" type="audio/mpeg">
+<audio id="music" controls>
+  <source id="musicSource" src="" type="audio/mpeg">
+  Your browser does not support the audio element.
 </audio>
 
 <script>
@@ -84,14 +94,30 @@ setInterval(createHeart, 300);
 
 // Music sequence: 15 sec A Thousand Years → Golden Hour
 const music = document.getElementById("music");
-music.src = "https://cdn.pixabay.com/download/audio/2022/03/15/audio_1c4374d7d1.mp3?filename=a-thousand-years-short-11340.mp3"; // 15s cut version
-music.play();
+const musicSource = document.getElementById("musicSource");
 
-music.onended = () => {
-  // switch to Golden Hour after first ends
-  music.src = "https://cdn.pixabay.com/download/audio/2022/03/15/audio_5b1b5aa12f.mp3?filename=golden-hour-ambient-11234.mp3"; 
-  music.play();
-};
+const songs = [
+  "https://cdn.pixabay.com/download/audio/2022/03/15/audio_1c4374d7d1.mp3?filename=a-thousand-years-short-11340.mp3", // 15s A Thousand Years
+  "https://cdn.pixabay.com/download/audio/2022/03/15/audio_5b1b5aa12f.mp3?filename=golden-hour-ambient-11234.mp3"  // Golden Hour
+];
+
+let currentSongIndex = 0;
+
+function playNextSong() {
+  musicSource.src = songs[currentSongIndex];
+  music.load();
+  music.play().catch(() => {
+    music.controls = true;
+  });
+  currentSongIndex++;
+  if (currentSongIndex >= songs.length) {
+    currentSongIndex = 0;
+  }
+}
+
+music.addEventListener("ended", playNextSong);
+
+playNextSong();
 </script>
 
 </body>
