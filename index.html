@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>For You ❤️</title>
+<style>
+body {
+  margin: 0;
+  padding: 0;
+  background: linear-gradient(to bottom, #ff9ecf, #ff4da6);
+  overflow: hidden;
+  font-family: Arial, sans-serif;
+  text-align: center;
+  color: white;
+}
+
+h1 {
+  margin-top: 15%;
+  font-size: 32px;
+  text-shadow: 2px 2px 8px red;
+}
+
+p {
+  font-size: 22px;
+  width: 80%;
+  margin: auto;
+  margin-top: 20px;
+  text-shadow: 1px 1px 5px black;
+}
+
+.heart {
+  position: fixed;
+  top: -10px;
+  color: red;
+  font-size: 20px;
+  animation: fall linear infinite;
+}
+
+@keyframes fall {
+  to {
+    transform: translateY(100vh);
+  }
+}
+</style>
+</head>
+<body>
+
+<h1 id="personalMessage"></h1>
+
+<p>
+"If 99.99% of people hate you, there are still 8 million people to love you.
+Even if they aren’t there for you, I am there for you — today, tomorrow, forever and ever."
+</p>
+
+<audio id="music" autoplay>
+  <source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3" type="audio/mpeg">
+</audio>
+
+<script>
+// Ask for their name
+let username = prompt("Enter your name ❤️");
+
+if (username === null || username.trim() === "") {
+  username = "Beautiful";
+}
+
+document.getElementById("personalMessage").innerHTML =
+  "I am there for you, " + username + " ❤️";
+
+// Floating hearts
+function createHeart() {
+  const heart = document.createElement("div");
+  heart.classList.add("heart");
+  heart.innerHTML = "❤️";
+  heart.style.left = Math.random() * 100 + "vw";
+  heart.style.animationDuration = Math.random() * 3 + 2 + "s";
+  document.body.appendChild(heart);
+
+  setTimeout(() => {
+    heart.remove();
+  }, 5000);
+}
+
+setInterval(createHeart, 300);
+
+// Music sequence: 15 sec A Thousand Years → Golden Hour
+const music = document.getElementById("music");
+music.src = "https://cdn.pixabay.com/download/audio/2022/03/15/audio_1c4374d7d1.mp3?filename=a-thousand-years-short-11340.mp3"; // 15s cut version
+music.play();
+
+music.onended = () => {
+  // switch to Golden Hour after first ends
+  music.src = "https://cdn.pixabay.com/download/audio/2022/03/15/audio_5b1b5aa12f.mp3?filename=golden-hour-ambient-11234.mp3"; 
+  music.play();
+};
+</script>
+
+</body>
+</html>
